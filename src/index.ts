@@ -11,7 +11,7 @@ import morgan from "morgan";
 import { Chess } from "./model/Chess";
 import gameRouter from "./controllers/gameRouter";
 import { errorHandler } from "./utils/middleware";
-import userRouter from "./controllers/userRouter";
+import userRouter from "./controllers/authRouter";
 dotenv.config();
 
 /**
@@ -54,5 +54,5 @@ app.use(errorHandler);
 app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
   await pool.connect();
-  const chess = new Chess();
+  // const chess = new Chess();
 });

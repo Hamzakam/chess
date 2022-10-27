@@ -16,6 +16,8 @@ export async function joinGame(email_address: string, game_id: number) {
   const players: number = await getBoardPlayerCount(game_id);
   if (players < 2) {
     await createPlayer(email_address, game_id, false);
+  } else {
+    throw { name: "error", message: "Too many users in one game" };
   }
 }
 
@@ -25,6 +27,12 @@ export async function getChessDetails(game_id: number) {
     `SELECT * FROM chess WHERE game_id='${game_id}';`
   );
   client.release();
+  if (!rows || rows.length === 0) {
+    throw {
+      name: "NotFoundError",
+      message: "Invalid game id or game. Please check again.",
+    };
+  }
   return rows[0];
 }
 

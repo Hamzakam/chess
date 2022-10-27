@@ -18,3 +18,8 @@ export interface ChessPlayers {
   whitePlayer: Player;
   blackPlayer: Player;
 }
+
+export interface Pos {
+  col: number;
+  row: number;
+}

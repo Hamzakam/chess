@@ -11,12 +11,17 @@ import Player from "./Player";
 import Squares from "./Square";
 
 export class Chess {
-  board?: Board;
+  board: Board;
   isCurrentPlayerWhite: boolean = true;
   gameStatus: string;
-  constructor(gameStatus: string = "active", boardState?: string) {
+  constructor(
+    gameStatus: string = "active",
+    isCurrentPlayerWhite: boolean,
+    boardState?: string
+  ) {
     this.gameStatus = gameStatus;
     this.board = boardState ? new Board(true, boardState) : new Board();
+    this.isCurrentPlayerWhite = isCurrentPlayerWhite;
     console.log(this.board.toString());
   }
   public async startGame(email_address: string): Promise<boolean> {
@@ -36,7 +41,7 @@ export class Chess {
     game_id: number
   ): Promise<boolean> {
     const move = new Moves(from, to, this.isCurrentPlayerWhite);
-    move.makeMove(game_id);
+    const isValid = await move.makeMove(game_id, this.board);
     return true;
   }
   public async setStatus(
@@ -51,9 +56,12 @@ export class Chess {
     this.gameStatus = await getCurrentStatus(game_id);
     return this.gameStatus;
   }
-  public async getBoard(game_id: number): Promise<Board | undefined> {
-    const fen = await getCurrentBoard(game_id);
-    this.board = new Board(true, fen);
-    return this.board;
+  public getBoard() {
+    const boardString = this.board;
+    return boardString;
+  }
+  public getBoardFEN() {
+    const fen = this.board?.returnFen();
+    return fen;
   }
 }

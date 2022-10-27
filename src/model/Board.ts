@@ -1,3 +1,4 @@
+import { Pos } from "../utils/types";
 import { Bishop, King, Knight, Pawn, Pieces, Queen, Rook } from "./Piece";
 import Squares from "./Square";
 
@@ -113,6 +114,24 @@ export default class Board {
     this.squares[row][col].setPiece(piece);
   }
 
+  //return the fen string for the board
+  public returnFen(): string {
+    let fen = "";
+    for (let ranks = 7; ranks >= 0; ranks--) {
+      for (let k = 0; k <= 7; k++) {
+        let count = 0;
+        while (!this.squares[ranks][k].getPiece() && k <= 7) {
+          count += 1;
+          k += 1;
+        }
+        fen += count > 0 ? `${count}` : `${this.squares[ranks][k].getPiece()}`;
+        count = 0;
+      }
+      fen += ranks < 7 ? "/" : "";
+    }
+    return fen;
+  }
+
   public toString(): string {
     let boardString = this.squares.reduce<string>((prev, curr, i) => {
       let currString = curr.reduce<string>(
@@ -123,5 +142,8 @@ export default class Board {
     }, "");
 
     return boardString;
+  }
+  public getSquare(pos: Pos): Squares {
+    return this.squares[pos.row][pos.col];
   }
 }

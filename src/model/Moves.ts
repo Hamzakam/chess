@@ -1,5 +1,6 @@
 import internal from "stream";
 import { movePiece } from "../services/Moves";
+import Board from "./Board";
 import { Pieces } from "./Piece";
 import Squares from "./Square";
 
@@ -15,7 +16,7 @@ export default class Moves {
     this.from = from;
     this.piece = from.getPiece();
   }
-  public async makeMove(game_id: number) {
+  public async makeMove(game_id: number, board: Board) {
     if (this.piece === undefined) {
       throw { name: "InvalidMove", message: "No piece to move." };
     }
@@ -42,9 +43,13 @@ export default class Moves {
       }
       this.killed = true;
     }
-    if (!this.piece.isMoveValid(this.from, this.to)) {
+    if (!this.piece.isMoveValid(this.from, this.to, board)) {
       throw { name: "Invalid Move", message: "This move is not valid" };
     }
     await movePiece(game_id, this);
+    return true;
+  }
+  public getIsPlayerWhite(): boolean {
+    return this.isWhitePlayer;
   }
 }
